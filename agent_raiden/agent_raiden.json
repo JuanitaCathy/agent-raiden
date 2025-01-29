@@ -1,1 +1,967 @@
-
+{
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "36b309f1-6948-4c1a-b6fd-54abac18dd8c",
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+              "rightValue": "=null",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1800,
+        1580
+      ],
+      "id": "2fc5502a-f33c-4fb7-afcf-6be66d7f21c2",
+      "name": "If2",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "executeOnce": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "328ac19a-3eb9-423d-a3b3-64f45d23ec6b",
+              "leftValue": "{{ $('Webhook').item.json.body.query }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4edba605-0294-4691-931c-0bb97223b116",
+              "leftValue": "{{$json[\"query\"]}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1900,
+        1760
+      ],
+      "id": "3335b559-1898-409b-a15c-7d1525031d88",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "updates": "={{ [\"message\"] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1080,
+        1440
+      ],
+      "id": "e6bf15fb-5553-4cf8-b9a5-299db1b34c90",
+      "name": "Telegram Trigger",
+      "webhookId": "d9b5e428-78e7-4e1a-97c1-77662c42f885",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hk8yCeSElsBlXqQ1",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ee2bcd57-3b4c-43f9-b4b7-3a25687b9a68",
+              "name": "=query",
+              "value": "={{$json[\"query\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "63f23e51-af2b-47c4-a288-5abaf9b6c357",
+              "name": "user_id",
+              "value": "={{$json[\"user_id\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "b97a3670-8a87-481b-8695-db44624be7d8",
+              "name": "request_id",
+              "value": "={{$json[\"request_id\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "7d3fa06d-08f7-4517-b9c5-3c46ff476f55",
+              "name": "session_id",
+              "value": "={{$json[\"session_id\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "656e9f1d-52bc-435c-b3ad-2a199e9dddd4",
+      "name": "Prep Input Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d9fec84b-86f0-4230-9fd4-c1cb392ff8b5",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "8cc2c8af-63d7-416b-a1c8-d07e7ffdfe4d",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        480,
+        1700
+      ],
+      "webhookId": "d9fec84b-86f0-4230-9fd4-c1cb392ff8b5",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "4qTuNqZEimTtwNqz",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        1920
+      ],
+      "id": "42396578-a9c0-4087-938b-9fd69a38b8ed",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "ctJbqsGebhtKNAU0",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": " $('Telegram Trigger'.item.json.message.chat.id) ",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        1280,
+        1920
+      ],
+      "id": "9d60fe72-d807-4b68-950b-ed40c4d46ff3",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "VnTnfeokbOnUBblI",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 5,
+        "filters": {
+          "labelIds": [
+            "INBOX",
+            "UNREAD"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        2100
+      ],
+      "id": "d44c57fe-2f8f-47c9-809b-ca53b37561b4",
+      "name": "Newsletter Get Mode",
+      "webhookId": "ea158e90-0866-48fa-8b93-703b71de1fb5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oWnDZtfUyTYQscry",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }} || {{$json[\"query\"]}}",
+        "options": {
+          "systemMessage": "=# ROLE\nYou are Raiden Raasikannu, a genshin gaming assistant.Your audience is mostly tech people, developers and students who are into gaming. You are inspired by Raiden Shogun. Respond straight to point and stay true to your theme as electro archon.\n\n# ADDITIONAL INFORMATION\nYou are currently chatting with {{ $json.message.from.first_name }}\nThe current date and time is {{ $now }}\n\n\n# TOOLS\n\n## Newsletter Get Mode\n\nuse this tool to retrieve unread game newsletter emails\n\n## Newsletter Recieve Mode\n\nUse this tool to send gaming newsletter emails. This tool requires the recipient email id, email subject and email body.\n\n## Get game schedules\n\nUse this tool to get game schedules, meeting information and other game information with the appropriate time and date.\n\n## Create game meets\n\nUse this tool to create game meets in the calendar.\n\n## Game stats sheet\n\nUse this tool to update and keep track of quests completed, hours played etc\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1440,
+        1700
+      ],
+      "id": "854dbf25-09e9-41e4-8340-8825a653a81f",
+      "name": "Raiden Raasikannu"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $fromAI('email_address', 'email address of the recipient') }}",
+        "subject": "= {{ $fromAI('email_subject', ' email subject line') }}",
+        "emailType": "text",
+        "message": " {{ $fromAI('email_body', ' the email body') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1500,
+        2100
+      ],
+      "id": "a6607742-cc5b-4ff7-ba5a-72cd3618d6d3",
+      "name": "Newsletter Receive Mode",
+      "webhookId": "5d994e1e-2b04-44e6-b0cd-990e800170d9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oWnDZtfUyTYQscry",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "juanitacathy486@gmail.com",
+          "mode": "list",
+          "cachedResultName": "juanitacathy486@gmail.com"
+        },
+        "options": {
+          "timeMin": "={{  $now }}",
+          "timeMax": "={{  $now.plus({week:1}) }}",
+          "timeZone": {
+            "__rl": true,
+            "value": "Asia/Calcutta",
+            "mode": "list",
+            "cachedResultName": "Asia/Calcutta"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1660,
+        2120
+      ],
+      "id": "b0f6b807-1894-40e7-bdc5-41244758135b",
+      "name": "Schedule games",
+      "notesInFlow": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "MVNFYKglMgW8nDE0",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }} \n{{ $json.title }}\n{{ $json.youtubeUrl }}\n",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        1380
+      ],
+      "id": "aab5cc4a-8aeb-45e5-836b-2e64be5285bb",
+      "name": "Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "lGrlOuOLIYRKFNlr",
+          "name": "Telegram MAIN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "documentId": {
+          "__rl": true,
+          "value": "1YsdCrSbLyWzvJBIS4HtB0HKblbkPB_alu-9qLngh_68",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YsdCrSbLyWzvJBIS4HtB0HKblbkPB_alu-9qLngh_68/edit?usp=drivesdk"
+        },
+        "title": "game-history-sheet",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        2220,
+        2120
+      ],
+      "id": "c2825d8b-e3e1-4547-87f9-bd0f2686ede1",
+      "name": "Track game stats",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jELUggj5d5vtRX9Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        2120
+      ],
+      "id": "0dfb496d-da0d-4c22-9223-fb9ec8205f71",
+      "name": "Wikipedia"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        2120
+      ],
+      "id": "fba8762d-dffe-42ee-97d4-fd871c7b9d87",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "qgs4vqBX2yD1zBm0",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "juanitacathy486@gmail.com",
+          "mode": "list",
+          "cachedResultName": "juanitacathy486@gmail.com"
+        },
+        "start": "={{ $fromAI('start') }}",
+        "end": "={{ $fromAI('end') }}",
+        "additionalFields": {
+          "summary": "={{ $fromAI('email_title') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1820,
+        2120
+      ],
+      "id": "2f458ee3-33d4-4b7e-92f5-5c514b913e59",
+      "name": "Create Game meets",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "MVNFYKglMgW8nDE0",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae6e6e18-9951-4382-8bb9-3257cc35eb07",
+              "name": "success",
+              "value": "=true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "05b15d0d-f7d0-4250-b887-bc345d877557",
+      "name": "Prep Output Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2280,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "X-n8n-Signature",
+                "value": "EvtIS^EBVISeie6svB@6ev"
+              }
+            ]
+          }
+        }
+      },
+      "id": "676f5b13-0fb1-450e-be00-c74f098541ed",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2520,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "transcript",
+        "options": {}
+      },
+      "id": "37d36b95-67ae-440e-9b60-64d25f807a3f",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        1080,
+        1140
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3ee42e4c-3cee-4934-97e7-64c96b5691ed",
+              "name": "youtubeUrl",
+              "type": "string",
+              "value": "={{ $json.body.youtubeUrl }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "61af55a1-5ba7-42e1-9bcc-9c96ff1f7baf",
+      "name": "Get YouTube URL",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        380,
+        1960
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "const extractYoutubeId = (url) => {\n  // Regex pattern that matches both youtu.be and youtube.com URLs\n  const pattern = /(?:youtube\\.com\\/(?:[^\\/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/)([^\"&?\\/\\s]{11})/;\n  const match = url.match(pattern);\n  return match ? match[1] : null;\n};\n\n// Input URL from previous node\nconst youtubeUrl = items[0].json.youtubeUrl; // Adjust this based on your workflow\n\n// Process the URL and return the video ID\nreturn [{\n  json: {\n    videoId: extractYoutubeId(youtubeUrl)\n  }\n}];\n"
+      },
+      "id": "fd2dba0a-2279-4f6c-acae-f01685a4e3f6",
+      "name": "YouTube Video ID",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        580,
+        1960
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please analyze the given text and create a structured summary following these guidelines:\n\n1. Break down the content into main topics using Level 2 headers (##)\n2. Under each header:\n   - List only the most essential concepts and key points\n   - Use bullet points for clarity\n   - Keep explanations concise\n   - Preserve technical accuracy\n   - Highlight key terms in bold\n3. Organize the information in this sequence:\n   - Definition/Background\n   - Main characteristics\n   - Implementation details\n   - Advantages/Disadvantages\n4. Format requirements:\n   - Use markdown formatting\n   - Keep bullet points simple (no nesting)\n   - Bold important terms using **term**\n   - Use tables for comparisons\n   - Include relevant technical details\n\nPlease provide a clear, structured summary that captures the core concepts while maintaining technical accuracy.\n\nHere is the text: {{ $json.concatenated_text\n }}"
+      },
+      "id": "6f9e9b96-f790-4b67-b27d-ed7126f7a255",
+      "name": "Summarize & Analyze Transcript",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1520,
+        1140
+      ],
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "text",
+              "separateBy": " "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "83a3bc04-1eeb-44b2-8e52-e69c82636ebe",
+      "name": "Concatenate",
+      "type": "n8n-nodes-base.summarize",
+      "position": [
+        1280,
+        1140
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf132004-6636-411f-9d85-0c696fda84c4",
+              "name": "summary",
+              "type": "string",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "id": "63c8d0e3-685c-488a-9b45-363cf52479ea",
+              "name": "topics",
+              "type": "array",
+              "value": "=[]"
+            },
+            {
+              "id": "171f30cf-34e9-42f3-8735-814024bfde0b",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $('Game Stream').item.json.snippet.title }}"
+            },
+            {
+              "id": "7f26f5a3-e695-49d1-b1e8-9260c31f1b3d",
+              "name": "description",
+              "type": "string",
+              "value": "={{ $('Game Stream').item.json.snippet.description }}"
+            },
+            {
+              "id": "d0594232-cb39-453c-b015-3b039c098e1f",
+              "name": "id",
+              "type": "string",
+              "value": "={{ $('Game Stream').item.json.id }}"
+            },
+            {
+              "id": "17b6ca08-ce89-4467-bd25-0d2d182f7a8b",
+              "name": "youtubeUrl",
+              "type": "string",
+              "value": "={{ $('Webhook1').item.json.body.youtubeUrl }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9c1aa1a5-90b5-4237-b4ab-a40086cf0c57",
+      "name": "Response Object",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1960,
+        1120
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "get",
+        "videoId": "={{ $json.videoId }}",
+        "options": {}
+      },
+      "id": "a0887d73-9d73-416a-942e-3080b336f372",
+      "name": "Game Stream",
+      "type": "n8n-nodes-base.youTube",
+      "position": [
+        780,
+        1960
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "756QJbRz1rcsyRvT",
+          "name": "YouTube account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        1340
+      ],
+      "id": "850aeadf-6b11-44d9-b90a-6a7e9b5d15b5",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hw71qhwoVTXyrHyP",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "transcript",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        820,
+        2200
+      ],
+      "id": "885dbf10-a25d-426f-ac0a-746d6b9d8331",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "QQxYL4pS8QxEGEj8",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Prep Output Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Input Fields": {
+      "main": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prep Input Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get YouTube URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Newsletter Get Mode": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Raiden Raasikannu": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Newsletter Receive Mode": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule games": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track game stats": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Game meets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Raiden Raasikannu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Output Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Concatenate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get YouTube URL": {
+      "main": [
+        [
+          {
+            "node": "YouTube Video ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Video ID": {
+      "main": [
+        [
+          {
+            "node": "Game Stream",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize & Analyze Transcript": {
+      "main": [
+        [
+          {
+            "node": "Response Object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Concatenate": {
+      "main": [
+        [
+          {
+            "node": "Summarize & Analyze Transcript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Object": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Game Stream": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarize & Analyze Transcript",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "64a6c8697808f542bd4d6c4b05b287988a02710dcb2753743c4a45881a86319b"
+  }
+}
